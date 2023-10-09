@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LongArithmetic
 {
-    internal static class Converter
+    internal static class Convertor
     {
         public static uint ConvertHexSymbolIntoDigit(char c)
         {
