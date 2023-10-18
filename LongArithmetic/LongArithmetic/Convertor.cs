@@ -8,7 +8,7 @@ namespace LongArithmetic
 {
     internal static class Convertor
     {
-        public static uint ConvertHexSymbolIntoDigit(char c)
+        public static uint HexSymbolIntoDigit(char c)
         {
             if ("0123456789".Contains(c))
             {
@@ -22,11 +22,11 @@ namespace LongArithmetic
             {
                 return (uint)c - 87;
             }
-            throw new ArgumentException();
+            throw new ArgumentException("Incorrect symbol");
         }
-        public static char ConvertDigitIntoHexSymbol(uint i)
+        public static char DigitIntoHexSymbol(uint i)
         {
-            if ((i >= 0) && (i < 9))
+            if ((i >= 0) && (i < 10))
             {
                 return (char)(48 + i);
             }
@@ -34,11 +34,11 @@ namespace LongArithmetic
             {
                 return (char)(55 + i);
             }
-            throw new ArgumentException();
+            throw new ArgumentException("Incorrect number");
         }
-        public static UInt32[] ConvertHexIntoNumber(string str)
+        public static uint[] HexStringIntoNumber(string str)
         {
-            var array = new UInt32[(str.Length / 8) + 1];
+            var array = new uint[LongInt.SIZE];
             var strReverse = new string(str.Reverse().ToArray());
             int cell = -1;
             for (int i = 0; i < strReverse.Length; i++)
@@ -49,26 +49,71 @@ namespace LongArithmetic
                     cell++;
                 }
                 uint powerOfTwo = (uint)Math.Pow(2, (double)(4 * j));
-                uint hexSymbol = ConvertHexSymbolIntoDigit(strReverse[i]);
+                uint hexSymbol = HexSymbolIntoDigit(strReverse[i]);
                 array[cell] += hexSymbol * powerOfTwo;
             }
             return array;
         }
-        public static string ConvertNumberIntoHex(UInt32[] array)
+        public static string NumberIntoHexString(uint[] array)
         {
             string output = string.Empty;
-            var ar = array.Reverse().ToArray();
-            foreach (UInt32 number in ar)
+            var reverseArray = array.Reverse().ToArray();
+            foreach (uint number in reverseArray)
             {
+                var str = string.Empty;
                 for (int i = 0; i < 8; i++)
                 {
                     uint powerOfTwo = (uint)Math.Pow(2, (double)(4 * i));
                     uint temp = number / powerOfTwo;
                     temp = temp % 16;
-                    output += ConvertDigitIntoHexSymbol(temp);
+                    str += DigitIntoHexSymbol(temp);
+                }
+                str = new string(str.Reverse().ToArray());
+                output += str;
+            }
+            output = output.TrimStart('0');
+            return output;
+        }
+        public static string BitIntoBitString(bool[] array)
+        {
+            string output = string.Empty;
+            var ar = array.Reverse().ToArray();
+            foreach(bool n in ar)
+            {
+                output += n ? "1" : "0";
+            }
+            output = output.TrimStart('0');
+            return output;
+        }
+        public static bool[] NumberIntoBits(uint[] array)
+        {
+            var output = new bool[array.Length * 32];
+            int i = 0;
+            foreach (uint number in array)
+            {
+
+                for (int j = 0; j < 32; j++)
+                {
+                    uint powerOfTwo = (uint)Math.Pow(2, (double)(j));
+                    uint temp = number / powerOfTwo;
+                    temp = temp % 2;
+                    output[j + i*32] = temp == 1;
+                }
+                i++;
+            }
+            return output;
+        }
+        public static uint[] BitsIntoNumber(bool[] array)
+        {
+            var output = new uint[array.Length/32];
+            for (int i = 0; i < output.Length; i++)
+            {
+                for(int j = 0; j < 32; j++)
+                {
+                    uint powerOfTwo = (uint)Math.Pow(2, (double)(j));
+                    output[i] += array[j + i*32] ? powerOfTwo : 0;
                 }
             }
-            output = new string(output.Reverse().ToArray());
             return output;
         }
     }
