@@ -8,9 +8,9 @@ using System.Xml;
 
 namespace LongArithmetic
 {
-    internal class LongInt
+    public class LongInt
     {
-        public const int SIZE = 64;
+        public const int SIZE = 512;
         public uint[] number { get; }
         public LongInt()
         {
@@ -268,6 +268,10 @@ namespace LongArithmetic
         {
             get { return number[i]; }
             set { number[i] = value; }
+        }
+        public override string ToString()
+        {
+            return Convertor.NumberIntoHexString(number);
         }
     }   
 }
