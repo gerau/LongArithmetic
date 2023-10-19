@@ -16,11 +16,13 @@ namespace LongArithmetic
         {
             number = new uint[SIZE];
         }
+
         public LongInt(string str)
         {
 
             number =  Convertor.HexStringIntoNumber(str);
         }
+
         public LongInt(uint[] number)
         {
             if(number.Length != SIZE) number = new uint[SIZE];
@@ -116,6 +118,7 @@ namespace LongArithmetic
             C[A.number.Length - 1] = carry;
             return C;
         }
+
         public static LongInt operator >> (LongInt A, int b)
         {           
             LongInt C = new LongInt();
@@ -129,6 +132,7 @@ namespace LongArithmetic
             }
             return C;
         }
+
         public static LongInt operator << (LongInt A, int b)
         {
             LongInt C = new LongInt();
@@ -142,6 +146,7 @@ namespace LongArithmetic
             }
             return C;
         }
+
         public static bool operator < (LongInt A, LongInt B)
         {
             int i = SIZE - 1;
@@ -174,10 +179,12 @@ namespace LongArithmetic
             if (i == -1) return true;
             else return A[i] < B[i] ? true : false;
         }
+
         public static bool operator >= (LongInt A, LongInt B)
         {
             return B <= A;
         }
+
         public static LongInt operator * (LongInt A, LongInt B)
         {
             LongInt C = new LongInt();
@@ -189,6 +196,7 @@ namespace LongArithmetic
             }
             return C;
         }
+
         public static LongInt toSquare(LongInt A)
         {
             return A * A;
@@ -216,6 +224,7 @@ namespace LongArithmetic
             var output = new LongInt(Convertor.BitsIntoNumber(Q.number));
             return output;
         }
+
         public static LongInt operator % (LongInt A, LongInt B)
         {
             var bitA = new LongIntBit(A);
@@ -237,28 +246,24 @@ namespace LongArithmetic
             return output;
         }
 
-        
-        public static LongInt Pow (LongInt A, LongInt B)
+        public static LongInt Pow(LongInt A, LongInt B)
         {
             var C = new LongInt(1);
             var bitB = new LongIntBit(B);
-            for(int i = bitB.BitLength() - 1;i > -1; i--)
+            for (int i = bitB.BitLength() - 1; i > -1; i--)
             {
                 if (bitB[i])
                 {
                     C = C * A;
                 }
-                if(i > 0)
+                if (i > 0)
                 {
                     C = toSquare(C);
                 }
             }
             return C;
-
         }
-        
 
-        
         public uint this[int i]
         {
             get { return number[i]; }

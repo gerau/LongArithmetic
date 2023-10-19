@@ -8,7 +8,7 @@ namespace LongArithmetic
 {
     internal static class Convertor
     {
-        public static uint HexSymbolIntoDigit(char c)
+        public static uint HexSymbolIntoDigit(char c) 
         {
             if ("0123456789".Contains(c))
             {
@@ -24,6 +24,7 @@ namespace LongArithmetic
             }
             throw new ArgumentException("Incorrect symbol");
         }
+
         public static char DigitIntoHexSymbol(uint i)
         {
             if ((i >= 0) && (i < 10))
@@ -36,6 +37,7 @@ namespace LongArithmetic
             }
             throw new ArgumentException("Incorrect number");
         }
+
         public static uint[] HexStringIntoNumber(string str)
         {
             var array = new uint[LongInt.SIZE];
@@ -54,6 +56,7 @@ namespace LongArithmetic
             }
             return array;
         }
+
         public static string NumberIntoHexString(uint[] array)
         {
             string output = string.Empty;
@@ -74,6 +77,7 @@ namespace LongArithmetic
             output = output.TrimStart('0');
             return output;
         }
+
         public static string BitIntoBitString(bool[] array)
         {
             string output = string.Empty;
@@ -85,6 +89,7 @@ namespace LongArithmetic
             output = output.TrimStart('0');
             return output;
         }
+
         public static bool[] NumberIntoBits(uint[] array)
         {
             var output = new bool[array.Length * 32];
@@ -103,6 +108,7 @@ namespace LongArithmetic
             }
             return output;
         }
+
         public static uint[] BitsIntoNumber(bool[] array)
         {
             var output = new uint[array.Length/32];

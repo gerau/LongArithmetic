@@ -19,6 +19,7 @@ namespace LongArithmetic
         {
             number = Convertor.NumberIntoBits(num.number);
         }
+
         public LongIntBit(LongIntBit A)
         {
             number = A.number;
@@ -97,6 +98,7 @@ namespace LongArithmetic
             }
             return C;
         }
+
         public static LongIntBit operator << (LongIntBit A, int b)
         {
             LongIntBit C = new LongIntBit();
@@ -110,6 +112,7 @@ namespace LongArithmetic
             }
             return C;
         }
+
         public static bool operator < (LongIntBit A, LongIntBit B)
         {
             int i = SIZE - 1;
@@ -142,6 +145,7 @@ namespace LongArithmetic
             if (i == -1) return true;
             else return B[i];
         }
+
         public static bool operator >= (LongIntBit A, LongIntBit B)
         {
             return B <= A;
@@ -171,6 +175,7 @@ namespace LongArithmetic
             A[k] = true;
             return A;
         }
+
         public bool this[int i]
         {
             get { return number[i]; }
