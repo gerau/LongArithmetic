@@ -13,3 +13,4 @@ Supports basic operations:
 - Division two LongInt's (/);
 - Modulus one number by another (%);
 - Bit shifts left and right (<<, >>), which represents multiplying or division by 2^32;
+- The power of one LongInt to another LongInt (.Pow)
