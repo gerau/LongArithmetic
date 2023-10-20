@@ -10,7 +10,7 @@ namespace LongArithmetic
 {
     public class LongInt
     {
-        public const int SIZE = 512;
+        public const int SIZE = 64;
         public uint[] number { get; }
         public LongInt()
         {
@@ -19,7 +19,6 @@ namespace LongArithmetic
 
         public LongInt(string str)
         {
-
             number =  Convertor.HexStringIntoNumber(str);
         }
 
@@ -263,6 +262,19 @@ namespace LongArithmetic
             }
             return C;
         }
+        public int BitLength()
+        {
+            int length = SIZE;
+            while (number[length - 1] == 0)
+            {
+                length--;
+                if (length == 0)
+                {
+                    break;
+                }
+            }
+            return length;
+        }
 
         public uint this[int i]
         {
@@ -272,6 +284,14 @@ namespace LongArithmetic
         public override string ToString()
         {
             return Convertor.NumberIntoHexString(number);
+        } 
+        public static LongInt Zero()
+        {
+            return new LongInt(0);
+        }
+        public static LongInt One()
+        {
+            return new LongInt(1);
         }
     }   
 }
