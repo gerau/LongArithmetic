@@ -10,7 +10,7 @@ namespace LongArithmetic
 {
     public class LongInt
     {
-        public const int SIZE = 64;
+        public const int SIZE = 2048;
         public uint[] number { get; }
         public LongInt()
         {
