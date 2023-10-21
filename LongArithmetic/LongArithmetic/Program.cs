@@ -1,59 +1,182 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Globalization;
 using System.Numerics;
+using System.Text;
 
 namespace LongArithmetic
 {
     internal class Program
     {
         static void Main(string[] args)
+
+
         {
-            string[] inputs1 = { "077f612aec34ab3905fdca712aecde12394834",
-                "0d8096aa33c5e6a93916fb36b3d713beb8e2276433f89bf7f5d6974021695720",
-                "0b10037272cf8a43f4c280244c580092b8f06858f70316b949c389f2b8fe2b76d0f9ca21b898",
-                "0fdad0f51b26f335c20535e774597bb8ee6a407f82d0609d1f26f488ea3aed0de2318a984fcd9b5c6",
-                "01dffd61a19751e050cb66e88545d59da1a9825ac2019f5b256c63545a812a9d0bde827860d639c8a5977c64a8c9a1e17805b"};
-            string[] inputs2 = {"0b159b7283e51f8bec6a01189c6735334",
-                "0ff135f6c6311a32e28e26cbf05f923bc71bd0b42c64dd1f50ba9282",
-                "01232b98164297f017f4b0840ccbc648ca20167eddc0bc1b156a1646a4848",
-                "07b06f577de31599e535a552ba0b9c1c7a46a8c9e8d660f9277f3907129a7fee58d6ea3",
-                "0a69fc4d5736a49d9b2a40c7a08c569a1607007d5174b5f222909b5d39afbad90b519d1f9f131273ca88f876e57aecdc88"};
+            //ConsoleColor[] colors = (ConsoleColor[])ConsoleColor.GetValues(typeof(ConsoleColor));
+            //colors[0] = ConsoleColor.Magenta;
+            //var csvT = new StringBuilder();
+            //var csvM = new StringBuilder();
+            //csvT.AppendLine("sum,sub,mult,div1,div2");
+            //for (int i = 0; i < 100; i++)
+            //{
+            //    Console.ForegroundColor = colors[i % colors.Length];
+            //    var first = new LongInt(Generator.GenerateNewHex(LongInt.SIZE / 7));
+            //    var second = new LongInt(Generator.GenerateNewHex(LongInt.SIZE / 7 - 8));
+
+            //    var listT = new long[5];
+            //    var listM = new long[5];
+            //    Stopwatch sw = new Stopwatch();
+            //    sw.Start();
+            //    var sum = first + second;
+            //    sw.Stop();
+            //    listT[0] = (sw.ElapsedTicks);
+            //    listM[0] = (sw.ElapsedMilliseconds);
+            //    sw.Restart();
+            //    sw.Start();
+            //    var sub = first - second;
+            //    sw.Stop();
+            //    listT[1] = (sw.ElapsedTicks);
+            //    listM[1] = (sw.ElapsedMilliseconds);
+            //    sw.Restart();
+            //    sw.Start();
+            //    var mult = first * second;
+            //    sw.Stop();
+            //    listT[2] = (sw.ElapsedTicks);
+            //    listM[2] = (sw.ElapsedMilliseconds);
+            //    sw.Restart();
+            //    sw.Start();
+            //    var div1 = first / second;
+            //    sw.Stop();
+            //    listT[3] = (sw.ElapsedTicks);
+            //    listM[3] = (sw.ElapsedMilliseconds);
+            //    sw.Restart();
+            //    sw.Start();
+            //    var div2 = first % second;
+            //    sw.Stop();
+            //    listT[4] = (sw.ElapsedTicks);
+            //    listM[4] = (sw.ElapsedMilliseconds);
+            //    sw.Restart();
+            //    Console.WriteLine($"{i}: {(listT[1] + listT[2] + listT[3] + listT[4] + listT[0])} ");
+            //    csvT.AppendLine($"{listT[0]},{listT[1]},{listT[2]},{listT[3]},{listT[4]}");
+            //    csvM.AppendLine($"{listM[0]},{listM[1]},{listM[2]},{listM[3]},{listM[4]}");
+            //}
+            //File.WriteAllText(@$"c:\data\TicksFor{LongInt.SIZE}_small.csv", csvT.ToString());
+            //File.WriteAllText(@$"c:\data\TimeFor{LongInt.SIZE}_small.csv", csvM.ToString());
+            //csvT = new StringBuilder();
+            //csvM = new StringBuilder();
+            //for (int i = 0; i < 100; i++)
+            //{
+            //    var first = new LongInt(Generator.GenerateNewHex(LongInt.SIZE * 6));
+            //    var second = new LongInt(Generator.GenerateNewHex(LongInt.SIZE * 6 - 8));
+            //    Console.ForegroundColor = colors[i % colors.Length];
+
+            //    var listT = new long[5];
+            //    var listM = new long[5];
+            //    Stopwatch sw = new Stopwatch();
+            //    sw.Start();
+            //    var sum = first + second;
+            //    sw.Stop();
+            //    listT[0] = (sw.ElapsedTicks);
+            //    listM[0] = (sw.ElapsedMilliseconds);
+            //    sw.Restart();
+            //    sw.Start();
+            //    var sub = first - second;
+            //    sw.Stop();
+            //    listT[1] = (sw.ElapsedTicks);
+            //    listM[1] = (sw.ElapsedMilliseconds);
+            //    sw.Restart();
+            //    sw.Start();
+            //    var mult = first * second;
+            //    sw.Stop();
+            //    listT[2] = (sw.ElapsedTicks);
+            //    listM[2] = (sw.ElapsedMilliseconds);
+            //    sw.Restart();
+            //    sw.Start();
+            //    var div1 = first / second;
+            //    sw.Stop();
+            //    listT[3] = (sw.ElapsedTicks);
+            //    listM[3] = (sw.ElapsedMilliseconds);
+            //    sw.Restart();
+            //    sw.Start();
+            //    var div2 = first % second;
+            //    sw.Stop();
+            //    listT[4] = (sw.ElapsedTicks);
+            //    listM[4] = (sw.ElapsedMilliseconds);
+            //    sw.Restart();
+            //    Console.WriteLine($"{ i}: { (listT[1] + listT[2] + listT[3] + listT[4] + listT[0])}");
+            //    csvT.AppendLine($"{listT[0]},{listT[1]},{listT[2]},{listT[3]},{listT[4]}");
+            //    csvM.AppendLine($"{listM[0]},{listM[1]},{listM[2]},{listM[3]},{listM[4]}");
+            //}
+            //File.WriteAllText(@$"c:\data\TicksFor{LongInt.SIZE}_big.csv", csvT.ToString());
+            //File.WriteAllText(@$"c:\data\TimeFor{LongInt.SIZE}_big.csv", csvM.ToString());
+            //var csvT = new StringBuilder();
+            //uint powerTo = 1000;
+            //for(int i = 0; i < 100; i++)
+            //{
+            //    var first = new LongInt(Generator.GenerateNewHex(LongInt.SIZE * 4));
+            //    var second = new LongInt(powerTo);
+            //    Stopwatch sw = new Stopwatch();
+            //    sw.Start();
+            //    var pow = LongInt.Pow(first,second);
+            //    sw.Stop();
+            //    var p = (sw.ElapsedTicks);
+            //    csvT.AppendLine($"{p}");
+            //    Console.WriteLine($"{i},{p}");
+            //}
+            //File.WriteAllText(@$"c:\data\TicksPow{LongInt.SIZE}to{powerTo}.csv", csvT.ToString());
+
+
+
+
+
+
+
+            string[] inputs1 = { "0f7f612aec34ab3905",
+                "0d8096aa33c5e6",
+                "0b10037272cf8a43f4c280244c580092b8f06858f70316b949c32",
+                "0fdad0f51b26f335c20535e774597bb8ee6a407f82d0609d1f26f488ea3123",
+                "01dffd61a19751e050cb66e88545d59da1a9825ac2019f5b256c63545a812a9d0bde"};
+            string[] inputs2 = {"0b159b7283e51f8b",
+                "0ff135f6c6",
+                "01232b98164297f017f4b0840ccbc648ca20167eddc0bc1b156",
+                "07b06f577de31599e535a552ba0b9c1c7a46a8c9e8d660f9277f3907129a",
+                "0a69fc4d5736a49d9b2a40c7a08c569a1607007d5174b5f222909b5d39afbad90b5"};
             for (int i = 0; i < 5; i++)
             {
-                int powerOf = 50;
-                var s1 = inputs1[i];
-                var s2 = inputs2[i];
+                 uint powerOf = 13;
+                 var s1 = inputs1[i];
+                 var s2 = inputs2[i];
 
 
-                var num1 = new LongInt(s1);
-                var num2 = new LongInt(s2);
+                 var num1 = new LongInt(s1);
+                 var num2 = new LongInt(s2);
 
-                var numb1 = BigInteger.Parse(s1, NumberStyles.AllowHexSpecifier);
-                var numb2 = BigInteger.Parse(s2, NumberStyles.AllowHexSpecifier);
+                 var numb1 = BigInteger.Parse(s1, NumberStyles.AllowHexSpecifier);
+                 var numb2 = BigInteger.Parse(s2, NumberStyles.AllowHexSpecifier);
 
-                var sum = num1 + num2;
-                var sub = num1 - num2;
-                var mult = num1 * num2;
-                var div1 = num1 / num2;
-                var div2 = num1 % num2;
-                var pow = LongInt.Pow(num1, new LongInt(50));
+                 var sum = num1 + num2;
+                 var sub = num1 - num2;
+                 var mult = num1 * num2;
+                 var div1 = num1 / num2;
+                 var div2 = num1 % num2;
+                 var pow = LongInt.Pow(num1, new LongInt(powerOf));
 
-                var sumb = numb1 + numb2;
-                var subb = numb1 - numb2;
-                var multb = numb1 * numb2;
-                var div1b = numb1 / numb2;
-                var div2b = numb1 % numb2;
-                var powb = BigInteger.Pow(numb1, 50);
+                 var sumb = numb1 + numb2;
+                 var subb = numb1 - numb2;
+                 var multb = numb1 * numb2;
+                 var div1b = numb1 / numb2;
+                 var div2b = numb1 % numb2;
+                 var powb = BigInteger.Pow(numb1, (int)powerOf);
 
-                var str = "";
-                str += $"A = {s1}, B = {s2}\n";
-                str += $"Sum of A and B: {Convertor.NumberIntoHexString(sum.number)} is equal to BigInteger operations: {Convertor.NumberIntoHexString(sum.number) == sumb.ToString("X").TrimStart('0')} \n{sumb.ToString("X")}\n";
-                str += $"Sub of A and B : {Convertor.NumberIntoHexString(sub.number)} is equal to BigInteger operations: {Convertor.NumberIntoHexString(sub.number) == subb.ToString("X").TrimStart('0')} \n{subb.ToString("X")}\n";
-                str += $"Mult of A and B: {Convertor.NumberIntoHexString(mult.number)} is equal to BigInteger operations: {Convertor.NumberIntoHexString(mult.number) == multb.ToString("X").TrimStart('0')} \n {multb.ToString("X")}\n";
-                str += $"Division of A and B: Q = {Convertor.NumberIntoHexString(div1.number)}, is equal to BigInteger: {Convertor.NumberIntoHexString(div1.number) == div1b.ToString("X").TrimStart('0')}\n {div1b.ToString("X")}\n";
-                str += $"and R =  {Convertor.NumberIntoHexString(div2.number)} is equal to BigInteger: {Convertor.NumberIntoHexString(div2.number) == div2b.ToString("X")}\n{div2b.ToString("X").TrimStart('0')}\n";
-                str += $"power of A and {powerOf}:  {Convertor.NumberIntoHexString(pow.number)}  is equal to BigInteger: {Convertor.NumberIntoHexString(pow.number) == powb.ToString("X").TrimStart('0')}\n{powb.ToString("X")}\n";
-                Console.WriteLine(str);
+                 var str = "";
+                 str += $"A = {s1}, B = {s2}\n";
+                 str += $"Sum of A and B: {Convertor.NumberIntoHexString(sum.number,true)} is equal to BigInteger operations: {Convertor.NumberIntoHexString(sum.number) == sumb.ToString("X").TrimStart('0')} \n";
+                 str += $"Sub of A and B : {Convertor.NumberIntoHexString(sub.number, true)} is equal to BigInteger operations: {Convertor.NumberIntoHexString(sub.number) == subb.ToString("X").TrimStart('0')}\n";
+                 str += $"Mult of A and B: {Convertor.NumberIntoHexString(mult.number, true)} is equal to BigInteger operations: {Convertor.NumberIntoHexString(mult.number) == multb.ToString("X").TrimStart('0')}\n";
+                 str += $"Division of A and B: Q = {Convertor.NumberIntoHexString(div1.number, true)}, is equal to BigInteger: {Convertor.NumberIntoHexString(div1.number) == div1b.ToString("X").TrimStart('0')}\n";
+                 str += $"and R =  {Convertor.NumberIntoHexString(div2.number, true)} is equal to BigInteger: {Convertor.NumberIntoHexString(div2.number) == div2b.ToString("X").TrimStart('0')}\n";
+                 str += $"power of A and {powerOf}:  {Convertor.NumberIntoHexString(pow.number, true)}  is equal to BigInteger: {Convertor.NumberIntoHexString(pow.number) == powb.ToString("X").TrimStart('0')}\n";
+                 Console.WriteLine(str);
             }
         }
     }
