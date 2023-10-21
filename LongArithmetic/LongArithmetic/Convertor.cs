@@ -25,7 +25,7 @@ namespace LongArithmetic
             throw new ArgumentException("Incorrect symbol");
         }
 
-        public static char DigitIntoHexSymbol(uint i)
+        public static char DigitIntoHexSymbol(uint i, bool isSmall = false)
         {
             if ((i >= 0) && (i < 10))
             {
@@ -33,7 +33,14 @@ namespace LongArithmetic
             }
             else if ((i >= 10) && (i < 16))
             {
-                return (char)(55 + i);
+                if (isSmall)
+                {
+                    return (char)(87 + i);
+                }
+                else
+                {
+                    return (char)(55 + i);
+                }
             }
             throw new ArgumentException("Incorrect number");
         }
@@ -57,7 +64,7 @@ namespace LongArithmetic
             return array;
         }
 
-        public static string NumberIntoHexString(uint[] array)
+        public static string NumberIntoHexString(uint[] array, bool isSmall = false)
         {
             string output = string.Empty;
             var reverseArray = array.Reverse().ToArray();
@@ -69,7 +76,7 @@ namespace LongArithmetic
                     uint powerOfTwo = (uint)Math.Pow(2, (double)(4 * i));
                     uint temp = number / powerOfTwo;
                     temp = temp % 16;
-                    str += DigitIntoHexSymbol(temp);
+                    str += DigitIntoHexSymbol(temp,isSmall);
                 }
                 str = new string(str.Reverse().ToArray());
                 output += str;
