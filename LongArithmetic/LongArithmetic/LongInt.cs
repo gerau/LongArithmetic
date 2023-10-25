@@ -309,6 +309,7 @@ namespace LongArithmetic
         {
             var C = new LongInt(1);
             var bitB = Convertor.NumberIntoBinary(B.number);
+            bitB = new string(bitB.Reverse().ToArray());
             for (int i = bitB.Length - 1; i > -1; i--)
             {
                 if (bitB[i] == '1')
@@ -317,7 +318,7 @@ namespace LongArithmetic
                 }
                 if (i > 0)
                 {
-                    C = toSquare(C);
+                    C = C * C;
                 }
             }
             return C;
