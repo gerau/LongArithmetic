@@ -10,7 +10,7 @@ namespace LongArithmetic
 {
     public class LongInt
     {
-        public const int SIZE = 2048;
+        public const int SIZE = 256;
         public uint[] number { get; }
         public LongInt()
         {
@@ -32,6 +32,11 @@ namespace LongArithmetic
         {
             this.number = new uint[SIZE];
             this.number[0] = number;
+        }
+
+        public LongInt(LongInt A)
+        {
+            this.number = A.number;
         }
 
         public static LongInt operator + (LongInt A, LongInt B)
@@ -201,57 +206,112 @@ namespace LongArithmetic
             return A * A;
         }
 
-        public static LongInt operator / (LongInt A, LongInt B)
+        public static LongInt BitShiftToHigh(LongInt A,int t)
         {
-            var bitA = new LongIntBit(A);
-            var bitB = new LongIntBit(B);
-            var k = bitB.BitLength();
-            var Q = new LongIntBit();
-            var R = new LongIntBit(bitA);
-            while(R >= bitB)
+            if(t <= 0)
             {
-                var t = R.BitLength();
-                var C = bitB << t - k;
-                if( R < C)
-                {
-                    t--;
-                    C = bitB << t - k;
-                }
-                R = R - C;
-                Q = Q + LongIntBit.returnPowerOfTwo(t - k);
+                return A;
             }
-            var output = new LongInt(Convertor.BitsIntoNumber(Q.number));
-            return output;
+            int numberOfShifts = t / 32;
+            int shift = t % 32;
+            uint carry = 0;
+            LongInt C = new LongInt();
+            if (shift != 0)
+            {
+                for (int i = 0; i < SIZE; i++)
+                {
+                    C[i] = (A[i] << shift) + carry;
+                    carry = (A[i] >> 32 - shift);
+                }
+                LongInt output = new LongInt();
+                for (int j = numberOfShifts; j < SIZE; j++)
+                {
+                    output[j] = C[j - numberOfShifts];
+                }
+                return output;
+            }
+            else
+            {
+                for (int i = 0; i < SIZE; i++)
+                {
+                    C[i] = A[i];
+                    
+                }
+                LongInt output = new LongInt();
+                for (int j = numberOfShifts; j < SIZE; j++)
+                {
+                    output[j] = C[j - numberOfShifts];
+                }
+                return output;
+            }
+            
         }
 
-        public static LongInt operator % (LongInt A, LongInt B)
+        public int BitLength()
         {
-            var bitA = new LongIntBit(A);
-            var bitB = new LongIntBit(B);
-            var k = bitB.BitLength();
-            var R = new LongIntBit(bitA);
-            while (R >= bitB)
+            if(this == LongInt.Zero())
+            {
+                return 0;
+            }
+            int i = DigitLength();
+            i--;
+            int length = i*32;
+            uint temp = number[i];
+            while (temp != 0)
+            {
+                temp = temp >> 1;
+                length++;
+            }
+            return length;
+           
+        }
+
+        public static LongInt operator / (LongInt A, LongInt B)
+        {
+            var k = B.BitLength();
+            var Q = new LongInt();
+            var R = new LongInt(A);
+            while(R >= B)
             {
                 var t = R.BitLength();
-                var C = bitB << t - k;
+                var C = LongInt.BitShiftToHigh(B, t - k);
                 if (R < C)
                 {
                     t--;
-                    C = bitB << t - k;
+                    C = LongInt.BitShiftToHigh(B, t - k);
+                }
+                R = R - C;
+                Q = Q + LongInt.BitShiftToHigh(new LongInt(1), t - k);
+            }
+            return Q;
+        }
+
+        public static LongInt operator %(LongInt A, LongInt B)
+        {
+
+            var k = B.BitLength();
+            var R = new LongInt(A);
+            while (R >= B)
+            {
+                var t = R.BitLength();
+                var C = LongInt.BitShiftToHigh(B, t - k);
+                if (R < C)
+                {
+                    t--;
+                    C = LongInt.BitShiftToHigh(B, t - k);
                 }
                 R = R - C;
             }
-            var output = new LongInt(Convertor.BitsIntoNumber(R.number));
-            return output;
+            return R;
         }
 
         public static LongInt Pow(LongInt A, LongInt B)
         {
             var C = new LongInt(1);
-            var bitB = new LongIntBit(B);
-            for (int i = bitB.BitLength() - 1; i > -1; i--)
+            var bitB = Convertor.NumberIntoBinary(B.number);
+            for (int i = bitB.Length - 1; i > -1; i--)
             {
-                if (bitB[i])
+                if (bitB[i] == '1')
                 {
                     C = C * A;
                 }
@@ -262,7 +322,7 @@ namespace LongArithmetic
             }
             return C;
         }
-        public int BitLength()
+        public int DigitLength()
         {
             int length = SIZE;
             while (number[length - 1] == 0)

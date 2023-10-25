@@ -129,5 +129,25 @@ namespace LongArithmetic
             }
             return output;
         }
+        public static string NumberIntoBinary(uint[] array)
+        {
+            string output = string.Empty;
+            var reverseArray = array.Reverse().ToArray();
+            foreach (uint number in reverseArray)
+            {
+                var str = string.Empty;
+                for (int i = 0; i < 32; i++)
+                {
+                    uint powerOfTwo = (uint)Math.Pow(2, (double)(i));
+                    uint temp = number / powerOfTwo;
+                    temp = temp % 2;
+                    str += $"{temp}";
+                }
+                str = new string(str.Reverse().ToArray());
+                output += str;
+            }
+            output = output.TrimStart('0');
+            return output;
+        }
     }
 }
