@@ -10,16 +10,18 @@ namespace LongArithmetic
 {
     public class LongInt
     {
+
+        // Size of big number. Represents size of internal array, also represents max value of number, which equals 2^32*SIZE - 1
         public const int SIZE = 256;
         public uint[] number { get; }
         public LongInt()
         {
             number = new uint[SIZE];
         }
-
+        // Create new instance of LongInt using string of Hex number
         public LongInt(string str)
         {
-            number =  Convertor.HexStringIntoNumber(str);
+            number = Convertor.HexStringIntoNumber(str);
         }
 
         public LongInt(uint[] number)
@@ -38,14 +40,13 @@ namespace LongArithmetic
         {
             this.number = A.number;
         }
-
         public static LongInt operator + (LongInt A, LongInt B)
         {
             uint carry = 0;
             var C = new LongInt();
             for(int i = 0 ; i < A.number.Length; i++)
             {
-                ulong temp = (ulong)A[i] + (ulong)B[i] + carry;
+                ulong temp = A[i] + B[i] + carry;
                 C[i] = (uint)(temp & (uint.MaxValue));
                 carry = (uint)(temp >> 32);
             }
@@ -163,8 +164,8 @@ namespace LongArithmetic
 
         public static bool operator <= (LongInt A, LongInt B)
         {
-            int i = SIZE - 1;
-            for (i = A.number.Length - 1; i > -1; i--)
+            int i;
+            for (i = SIZE - 1; i > -1; i--)
             {
                 if (A[i] != B[i])
                 {
@@ -199,7 +200,7 @@ namespace LongArithmetic
 
         public static LongInt BitShiftToHigh(LongInt A,int t)
         {
-            if(t <= 0)
+            if(t <= 0 | t >= SIZE)
             {
                 return A;
             }
@@ -238,7 +239,7 @@ namespace LongArithmetic
         }
         public static LongInt BitShiftToLow(LongInt A, int t)
         {
-            if (t <= 0)
+            if (t <= 0 | t >= SIZE)
             {
                 return A;
             }
@@ -316,7 +317,7 @@ namespace LongArithmetic
             return Q;
         }
 
-        public static LongInt operator %(LongInt A, LongInt B)
+        public static LongInt operator % (LongInt A, LongInt B)
         {
 
             var k = B.BitLength();
@@ -385,6 +386,42 @@ namespace LongArithmetic
         {
             return (A * B) / BinaryGCD(A, B);
         }
+
+        public static LongInt BarrettReduction(LongInt A, LongInt N, LongInt M)
+        {    
+            var k = N.DigitLength();
+
+            LongInt Q = A >> k - 1;
+            Q = Q * M;
+            Q = Q >> k + 1;
+            
+            LongInt R = A - Q * N;
+            while(R >= N)
+            {
+                R = R - N;
+            }
+            return R;
+        }
+
+        public static LongInt PowModBarret(LongInt A, LongInt B, LongInt N)
+        {
+            LongInt C = new LongInt(1);
+            LongInt M = Mu(N);
+            var bitB = Convertor.NumberIntoBinary(B.number);
+            bitB = new string(bitB.Reverse().ToArray());
+            for (int i = bitB.Length - 1; i > -1; i--)
+            {
+                if (bitB[i] == '1')
+                {
+                    C = BarrettReduction(C * A, N, M);
+                }
+                if (i > 0)
+                {
+                    C = BarrettReduction(C * C, N, M);
+                }
+            }
+            return C;
+        }
         public int DigitLength()
         {
             int length = SIZE;
@@ -401,6 +438,15 @@ namespace LongArithmetic
         public bool IsEven()
         {
             return number[0] % 2 == 0;
+        }
+
+        public static LongInt Mu(LongInt N)
+        {
+            var Length = N.DigitLength();
+            var Beta = new LongInt(1);
+            Beta = BitShiftToHigh(Beta, 32);
+            Beta = Pow(Beta, new LongInt((uint)(Length * 2)));
+            return Beta/N;
         }
         public static LongInt Min(LongInt A, LongInt B)
         {
@@ -424,7 +470,6 @@ namespace LongArithmetic
                 return B - A;
             }
         }
-
         public uint this[int i]
         {
             get { return number[i]; }
