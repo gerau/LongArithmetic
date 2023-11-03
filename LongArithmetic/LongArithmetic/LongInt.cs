@@ -97,16 +97,7 @@ namespace LongArithmetic
 
         public static bool operator != (LongInt A, LongInt B)
         {
-            int i = A.number.Length - 1;
-            while (A[i] == B[i])
-            {
-                i--;
-            }
-            if (i == -1)
-            {
-                return false;
-            }
-            return true;
+            return !(A == B);
         }
 
         public static LongInt operator * (LongInt A, uint b)
@@ -244,12 +235,51 @@ namespace LongArithmetic
                 }
                 return output;
             }
-            
+        }
+        public static LongInt BitShiftToLow(LongInt A, int t)
+        {
+            if (t <= 0)
+            {
+                return A;
+            }
+            int numberOfShifts = t / 32;
+            int shift = t % 32;
+            uint carry = 0;
+            LongInt C = new LongInt();
+            if (shift != 0)
+            {
+                for (int i = SIZE - 1; i > 0; i--)
+                {
+                    C[i] = (A[i] >> shift) + (carry << 32 - shift);
+                    carry = A[i] & (uint)shift;
+                }
+                C[0] = (A[0] >> shift) + (carry << 32 - shift);
+                LongInt output = new LongInt();
+                for (int j = SIZE - 1 - numberOfShifts; j > -1 ; j--)
+                {
+                    output[j] = C[j + numberOfShifts];
+                }
+                return output;
+            }
+            else
+            {
+                for (int i = SIZE - 1; i > -1; i--)
+                {
+                    C[i] = A[i];
+
+                }
+                LongInt output = new LongInt();
+                for (int j = SIZE - 1 - numberOfShifts; j > -1; j--)
+                {
+                    output[j] = C[j + numberOfShifts];
+                }
+                return output;
+            }
         }
 
         public int BitLength()
         {
-            if(this == LongInt.Zero())
+            if(this == Zero())
             {
                 return 0;
             }
@@ -274,14 +304,14 @@ namespace LongArithmetic
             while(R >= B)
             {
                 var t = R.BitLength();
-                var C = LongInt.BitShiftToHigh(B, t - k);
+                var C = BitShiftToHigh(B, t - k);
                 if (R < C)
                 {
                     t--;
-                    C = LongInt.BitShiftToHigh(B, t - k);
+                    C = BitShiftToHigh(B, t - k);
                 }
                 R = R - C;
-                Q = Q + LongInt.BitShiftToHigh(new LongInt(1), t - k);
+                Q = Q + BitShiftToHigh(new LongInt(1), t - k);
             }
             return Q;
         }
@@ -294,11 +324,11 @@ namespace LongArithmetic
             while (R >= B)
             {
                 var t = R.BitLength();
-                var C = LongInt.BitShiftToHigh(B, t - k);
+                var C = BitShiftToHigh(B, t - k);
                 if (R < C)
                 {
                     t--;
-                    C = LongInt.BitShiftToHigh(B, t - k);
+                    C = BitShiftToHigh(B, t - k);
                 }
                 R = R - C;
             }
@@ -323,6 +353,38 @@ namespace LongArithmetic
             }
             return C;
         }
+        public static LongInt BinaryGCD(LongInt A, LongInt B)
+        {
+            var C = new LongInt(1);
+            var Atemp = new LongInt(A);
+            var Btemp = new LongInt(B);
+            while (Atemp.IsEven() & Btemp.IsEven())
+            {
+                Atemp = BitShiftToLow(Atemp, 1);
+                Btemp = BitShiftToLow(Btemp, 1);
+                C = BitShiftToHigh(C, 1);
+            }
+            while (Atemp.IsEven())
+            {
+                Atemp = BitShiftToLow(Atemp, 1);
+            }
+            while (Btemp != Zero())
+            {
+                while (Btemp.IsEven())
+                {
+                    Btemp = BitShiftToLow(Btemp, 1);
+                }
+                var temp = Min(Atemp, Btemp);
+                Btemp = AbsForSub(Atemp, Btemp);
+                Atemp = temp;
+            }
+            C = C * Atemp;
+            return C;
+        }
+        public static LongInt LCM(LongInt A, LongInt B)
+        {
+            return (A * B) / BinaryGCD(A, B);
+        }
         public int DigitLength()
         {
             int length = SIZE;
@@ -335,6 +397,32 @@ namespace LongArithmetic
                 }
             }
             return length;
+        }
+        public bool IsEven()
+        {
+            return number[0] % 2 == 0;
+        }
+        public static LongInt Min(LongInt A, LongInt B)
+        {
+            if(A > B)
+            {
+                return B;
+            }
+            else
+            {
+                return A;
+            }
+        }
+        public static LongInt AbsForSub(LongInt A, LongInt B)
+        {
+            if(A > B)
+            {
+                return A - B;
+            }
+            else
+            {
+                return B - A;
+            }
         }
 
         public uint this[int i]
