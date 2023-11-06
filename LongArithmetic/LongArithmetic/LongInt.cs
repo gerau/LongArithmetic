@@ -10,18 +10,23 @@ namespace LongArithmetic
 {
     public class LongInt
     {
-
-        // Size of big number. Represents size of internal array, also represents max value of number, which equals 2^32*SIZE - 1
         public const int SIZE = 256;
         public uint[] number { get; }
         public LongInt()
         {
             number = new uint[SIZE];
         }
-        // Create new instance of LongInt using string of Hex number
         public LongInt(string str)
         {
             number = Convertor.HexStringIntoNumber(str);
+        }
+        internal LongInt(LongLongInt A) 
+        {
+            number = new uint[SIZE];
+            for (int i = 0; i < SIZE; i++)
+            {
+                number[i] = A.number[i];
+            }
         }
 
         public LongInt(uint[] number)
@@ -44,9 +49,9 @@ namespace LongArithmetic
         {
             uint carry = 0;
             var C = new LongInt();
-            for(int i = 0 ; i < A.number.Length; i++)
+            for(int i = 0 ; i < SIZE; i++)
             {
-                ulong temp = A[i] + B[i] + carry;
+                ulong temp = (ulong)A[i] + (ulong)B[i] + (ulong)carry;
                 C[i] = (uint)(temp & (uint.MaxValue));
                 carry = (uint)(temp >> 32);
             }
@@ -57,9 +62,9 @@ namespace LongArithmetic
         {
             uint borrow = 0;
             var C = new LongInt();
-            for (int i = 0; i < A.number.Length; i++)
+            for (int i = 0; i < SIZE; i++)
             {
-                Int64 temp = (Int64)A[i] - (Int64)B[i] - borrow;
+                long temp = (long)A[i] - (long)B[i] - borrow;
                 if(temp >= 0)
                 {
                     C[i] = (uint)temp;
@@ -77,41 +82,28 @@ namespace LongArithmetic
             }
             return C;
         }
-
-        public static bool operator == (LongInt A, LongInt B)
-        {
-            int i = 0;
-            for (i = A.number.Length - 1; i > -1; i--)
-            {
-                if (A[i] != B[i])
-                {
-                    break;
-                }
-            }
-            if (i == -1)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        public static bool operator != (LongInt A, LongInt B)
-        {
-            return !(A == B);
-        }
-
         public static LongInt operator * (LongInt A, uint b)
         {
             uint carry = 0;
             LongInt C = new LongInt();
-            for(int i = 0; i < A.number.Length; i++)
+            for(int i = 0; i < SIZE; i++)
             {
                 ulong temp = (ulong)A[i]*(ulong)b + (ulong)carry;
                 C[i] = (uint)(temp & uint.MaxValue);
                 carry = (uint)(temp >> 32);
             }
-            C[A.number.Length - 1] = carry;
+            C[SIZE - 1] = carry;
+            return C;
+        }
+        public static LongInt operator * (LongInt A, LongInt B)
+        {
+            LongInt C = new LongInt();
+            for (int i = 0; i < SIZE; i++)
+            {
+                var temp = A * B[i];
+                temp = temp << i;
+                C = C + temp;
+            }
             return C;
         }
 
@@ -141,6 +133,28 @@ namespace LongArithmetic
                 b++;
             }
             return C;
+        }
+        public static bool operator == (LongInt A, LongInt B)
+        {
+            int i = 0;
+            for (i = A.number.Length - 1; i > -1; i--)
+            {
+                if (A[i] != B[i])
+                {
+                    break;
+                }
+            }
+            if (i == -1)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public static bool operator != (LongInt A, LongInt B)
+        {
+            return !(A == B);
         }
 
         public static bool operator < (LongInt A, LongInt B)
@@ -181,17 +195,6 @@ namespace LongArithmetic
             return B <= A;
         }
 
-        public static LongInt operator * (LongInt A, LongInt B)
-        {
-            LongInt C = new LongInt();
-            for(int i = 0; i < SIZE; i++)
-            {
-                var temp = A * B[i];
-                temp = temp << i;
-                C = C + temp;
-            }
-            return C;
-        }
 
         public static LongInt toSquare(LongInt A)
         {
@@ -200,7 +203,7 @@ namespace LongArithmetic
 
         public static LongInt BitShiftToHigh(LongInt A,int t)
         {
-            if(t <= 0 | t >= SIZE)
+            if(t <= 0 | t >= SIZE*32)
             {
                 return A;
             }
@@ -239,7 +242,7 @@ namespace LongArithmetic
         }
         public static LongInt BitShiftToLow(LongInt A, int t)
         {
-            if (t <= 0 | t >= SIZE)
+            if (t <= 0 | t >= SIZE*32)
             {
                 return A;
             }
@@ -336,7 +339,7 @@ namespace LongArithmetic
             return R;
         }
 
-        public static LongInt Pow(LongInt A, LongInt B)
+        public static LongInt Pow (LongInt A, LongInt B)
         {
             var C = new LongInt(1);
             var bitB = Convertor.NumberIntoBinary(B.number);
@@ -391,33 +394,87 @@ namespace LongArithmetic
         {    
             var k = N.DigitLength();
 
+            if(A < N)
+            {
+                return A;
+            }
             LongInt Q = A >> k - 1;
             Q = Q * M;
             Q = Q >> k + 1;
             
-            LongInt R = A - Q * N;
+            LongInt R = A - (Q * N);
             while(R >= N)
             {
                 R = R - N;
             }
             return R;
         }
+        public LongInt ModAdd(LongInt B, LongInt N, LongInt M)
+        {
+            if (B.DigitLength() == SIZE & this.DigitLength() == SIZE)
+            {
+                var C = new LongLongInt(B) + new LongLongInt(this);
+                return LongLongInt.BarrettReduction(C, new LongLongInt(N), new LongLongInt(M));
+            }
+            else 
+            {
+                var C = this + B;
+                return BarrettReduction(C, N, M);
+            }
+        }
+        public LongInt ModSub(LongInt B, LongInt N, LongInt M)
+        {
+            if(this < B)
+            {
+                var C = B - this;
+                C = BarrettReduction(C, N, M);
+                C = N - C;
+                return C;
+            }
+            else
+            {
+                var C = this - B;
+                return BarrettReduction(C, N, M);
+            }
+        }
+        public LongInt ModMult(LongInt B, LongInt N, LongInt M)
+        {
+            var Amod = this % N;
+            var Bmod = B % N;
+            if(Amod.DigitLength() >= (SIZE >> 1) | Bmod.DigitLength() >= (SIZE >> 1))
+            {
+                var C = new LongLongInt(Bmod) * new LongLongInt(Amod);
+                if(N.DigitLength() == SIZE)
+                {
+                    return LongLongInt.BarrettReduction(C, new LongLongInt(N), LongLongInt.Mu(N));
+                }
+                else return LongLongInt.BarrettReduction(C, new LongLongInt(N), new LongLongInt(M));
+
+            }
+            else
+            {
+                var C = Amod * Bmod;
+                return BarrettReduction(C, N, M);
+            }
+        }
 
         public static LongInt PowModBarret(LongInt A, LongInt B, LongInt N)
         {
             LongInt C = new LongInt(1);
             LongInt M = Mu(N);
+            var Amod = A % N;
             var bitB = Convertor.NumberIntoBinary(B.number);
             bitB = new string(bitB.Reverse().ToArray());
             for (int i = bitB.Length - 1; i > -1; i--)
+
             {
                 if (bitB[i] == '1')
                 {
-                    C = BarrettReduction(C * A, N, M);
+                    C = C.ModMult(Amod, N, M);
                 }
                 if (i > 0)
                 {
-                    C = BarrettReduction(C * C, N, M);
+                    C = C.ModMult(C, N, M);
                 }
             }
             return C;
@@ -440,13 +497,14 @@ namespace LongArithmetic
             return number[0] % 2 == 0;
         }
 
-        public static LongInt Mu(LongInt N)
+        public static LongInt Mu(LongInt N) //мууууууумуууумуууууууу мяу мяу мяу муууууууууууууууу
         {
-            var Length = N.DigitLength();
-            var Beta = new LongInt(1);
-            Beta = BitShiftToHigh(Beta, 32);
-            Beta = Pow(Beta, new LongInt((uint)(Length * 2)));
-            return Beta/N;
+            var length = N.DigitLength();
+            var NLong = new LongLongInt(N);
+            var Beta = new LongLongInt(1);
+            Beta = Beta << 2 * length;
+            var temp = Beta / NLong;
+            return new LongInt(temp);
         }
         public static LongInt Min(LongInt A, LongInt B)
         {
@@ -477,9 +535,9 @@ namespace LongArithmetic
         }
         public override string ToString()
         {
-            return Convertor.NumberIntoHexString(number);
+            return Convertor.NumberIntoHexString(number, true);
         } 
-        public static LongInt Zero()
+        public static  LongInt Zero()
         {
             return new LongInt(0);
         }
@@ -487,5 +545,5 @@ namespace LongArithmetic
         {
             return new LongInt(1);
         }
-    }   
+    }
 }
