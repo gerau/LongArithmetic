@@ -55,7 +55,7 @@ namespace LongArithmeticTests
             Assert.IsTrue((numMultRight.ToString() == numMultLeft.ToString()) & (numMult.ToString() == numMultLeft.ToString()) & (numMult.ToString() == numMultRight.ToString()));
         }
         [Test]
-        public void Test4()
+        public void DistributivityTest()
         {
             var num1 = new LongInt(number1);
             var num2 = new LongInt(number2);
@@ -86,5 +86,6 @@ namespace LongArithmeticTests
             var num4 = num2 * num1;
             Assert.That(num3.ToString(), Is.EqualTo(num4.ToString()));
         }
+        
     }
 }
