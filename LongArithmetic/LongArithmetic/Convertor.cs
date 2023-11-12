@@ -45,9 +45,17 @@ namespace LongArithmetic
             throw new ArgumentException("Incorrect number");
         }
 
-        public static uint[] HexStringIntoNumber(string str)
+        public static uint[] HexStringIntoNumber(string str, bool isDouble)
         {
-            var array = new uint[LongInt.SIZE];
+            uint[] array;
+            if (isDouble) 
+            {
+                array = new uint[LongInt.SIZE * 2 + 1]; 
+            }
+            else
+            {
+                array = new uint[LongInt.SIZE];
+            }
             var strReverse = new string(str.Reverse().ToArray());
             int cell = -1;
             for (int i = 0; i < strReverse.Length; i++)
