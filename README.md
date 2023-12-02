@@ -1,4 +1,4 @@
-Here will be all labs for special sections of computational math.
+Here will be first and second lab for special sections of computational math.
 
 # Directories
 
